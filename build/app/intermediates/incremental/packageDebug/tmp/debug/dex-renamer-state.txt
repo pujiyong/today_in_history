@@ -1,0 +1,4 @@
+#Sat Apr 25 19:21:08 CST 2020
+base.0=/Users/pjy/Documents/flutter/today_in_history/build/app/intermediates/dex/debug/mergeDexDebug/out/classes.dex
+path.0=classes.dex
+renamed.0=classes.dex
