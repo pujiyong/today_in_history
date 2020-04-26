@@ -11,7 +11,8 @@ class EventsListPage extends StatefulWidget {
 }
 
 class _EventsListPageState extends State<EventsListPage> {
-  String date;
+  String title;
+  DateTime date = DateTime.now();
   var dataList = List();
 
   @override
@@ -24,7 +25,7 @@ class _EventsListPageState extends State<EventsListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(date),
+        title: Text(title),
       ),
       body: ListView.separated(
         itemBuilder: (BuildContext context, int index) {
@@ -38,6 +39,14 @@ class _EventsListPageState extends State<EventsListPage> {
         }, 
         itemCount: dataList.length,
       ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: (){
+          _chooseDate();
+        },
+        backgroundColor: Colors.blue,
+        child : Center(child: Text('选择\n日期'),),
+      ),
+        
     );
   }
 
@@ -60,7 +69,7 @@ class _EventsListPageState extends State<EventsListPage> {
   }
 
   _getData() async {
-    await API().getTodayEvents((result){
+    await API().getEventsWithDate(date, (result){
       setState(() {
         dataList = result['result'];
       });
@@ -69,9 +78,23 @@ class _EventsListPageState extends State<EventsListPage> {
 
   _updateTitle() {
     setState(() {
-      date = formatDate(DateTime.now() ,['今天是  ',yyyy,'-',mm,'-',dd]);
+      if (date.day == DateTime.now().day) {
+        title = '历史上的今天';
+      } else {
+        title = formatDate(date ,['历史上的  ', mm, '-' ,dd]);
+      }
     });
-    
+  }
+
+  _chooseDate() async {
+    DateTime now = DateTime.now();
+    date = await showDatePicker(context: context, initialDate: now, firstDate: DateTime(now.year,01, 01), lastDate: DateTime(now.year, 12, 31));
+    if (date != null) {
+      setState(() {
+        _updateTitle();
+        _getData();
+      });
+    }
   }
 }
   

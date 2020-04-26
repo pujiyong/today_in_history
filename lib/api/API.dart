@@ -3,19 +3,18 @@ import 'dart:convert';
 import 'package:http/http.dart' as http; 
 
 class API {
-  final String eventList = 'http://v.juhe.cn/todayOnhistory/queryEvent.php?key=358271d537e00d0086c5617348c5e73a';
-  final String detailUrl = 'http://v.juhe.cn/todayOnhistory/queryDetail.php?key=358271d537e00d0086c5617348c5e73a';
+  static const baseUrl = 'http://v.juhe.cn/todayOnhistory';
+  static const String appKey = '358271d537e00d0086c5617348c5e73a';
+  static const String eventList = baseUrl + '/queryEvent.php?key=' + appKey;
+  static const String detailUrl = baseUrl + '/queryDetail.php?key=' + appKey;
 
-  getTodayEvents(Function callBack) async {
-    DateTime date = DateTime.now();
+  getEventsWithDate(DateTime date, Function callBack) async {
     String url = eventList + '&date=' + date.month.toString() + '/' + date.day.toString();
-    print(url);
     try {
       var response = await http.get(url);
       if(response.body != null) {
         var data = jsonDecode(response.body);
         callBack(data);
-        print(data);
       }
     } catch (e) {
       callBack(e);
@@ -24,13 +23,11 @@ class API {
 
   getEventDetail(id, Function callBack) async {
     String url = detailUrl + '&e_id=' + id;
-    print(url);
     try {
       var response = await http.get(url);
       if(response.body != null) {
         var data = jsonDecode(response.body);
         callBack(data);
-        print(data);
       }
     } catch (e) {
       callBack(e);
